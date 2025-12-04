@@ -27,4 +27,100 @@
         </foreach>
     </delete>
 
+    <resultMap id="empResultMap" type="org.example.pojo.Emp">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="phone" column="phone"/>
+        <result property="job" column="job"/>
+        <result property="salary" column="salary"/>
+        <result property="image" column="image"/>
+        <result property="entryDate" column="entry_date"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <collection property="exprList" ofType="org.example.pojo.EmpExpr">
+            <id property="id" column="ee_id"/>
+            <result property="empId" column="ee_emp_id"/>
+            <result property="begin" column="ee_begin"/>
+            <result property="end" column="ee_end"/>
+            <result property="company" column="ee_company"/>
+            <result property="job" column="ee_job"/>
+        </collection>
+    </resultMap>
+
+    <select id="getInfoById" resultMap="empResultMap">
+        select
+            e.*,
+            ee.id ee_id,
+            ee.emp_id ee_emp_id,
+            ee.begin ee_begin,
+            ee.end ee_end,
+            ee.company ee_company,
+            ee.job ee_job
+        from emp e left join emp_expr ee on e.id = ee.emp_id
+        where e.id = #{id}
+    </select>
+
+    <update id="updateById">
+        update emp
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="gender != null">
+                gender = #{gender},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="job != null">
+                job = #{job},
+            </if>
+            <if test="salary != null">
+                salary = #{salary},
+            </if>
+            <if test="image != null">
+                image = #{image},
+            </if>
+            <if test="entryDate != null">
+                entry_date = #{entryDate},
+            </if>
+            <if test="deptId != null">
+                dept_id = #{deptId},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <select id="countEmpJobData" resultType="java.util.Map">
+        select
+            (case job when 1 then '学工部'
+                      when 2 then '教研部'
+                      when 3 then '咨询部'
+                      when 4 then '就业部'
+                      when 5 then '人事部'
+                      when 6 then '行政部'
+                      else '其他' end) pos,
+            count(*) number
+        from emp group by job order by number
+    </select>
+
+    <select id="countEmpGenderData" resultType="org.example.pojo.GenderOption">
+        select
+            if(gender = 1, '男', '女') gender,
+            count(*) num
+        from emp group by gender;
+    </select>
 </mapper>

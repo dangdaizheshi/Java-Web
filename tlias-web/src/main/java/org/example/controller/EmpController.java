@@ -45,4 +45,16 @@ public class EmpController {
         empService.delete(ids);
         return Result.success();
     }
+
+    @GetMapping("/{id}")
+    public Result getInfo(@PathVariable Integer id) {
+        Emp emp = empService.getInfo(id);
+        return Result.success(emp);
+    }
+
+    @PutMapping
+    public Result update(@RequestBody Emp emp) {
+        empService.update(emp);
+        return Result.success();
+    }
 }
