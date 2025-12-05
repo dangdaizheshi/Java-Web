@@ -7,7 +7,7 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-@Aspect // 将当前类标识为一个 aop 类
+//@Aspect // 将当前类标识为一个 aop 类
 @Component
 public class RecordTimeAspect {
 

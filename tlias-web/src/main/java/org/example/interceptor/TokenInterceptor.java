@@ -1,7 +1,9 @@
 package org.example.interceptor;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.utils.CurrentHolder;
 import org.example.utils.JwtUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -24,7 +26,9 @@ public class TokenInterceptor implements HandlerInterceptor {
             }
             //校验 token
             try {
-                JwtUtils.parseJwt(token);
+                Claims claims = JwtUtils.parseJwt(token);
+                Integer empId = Integer.valueOf(claims.get("id").toString());
+                CurrentHolder.setCurrentId(empId);
             } catch (Exception e) {
                 response.setStatus(401);
                 return false;
@@ -33,5 +37,10 @@ public class TokenInterceptor implements HandlerInterceptor {
             // 放行
             return true;
         }
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        CurrentHolder.remove();
     }
 }
