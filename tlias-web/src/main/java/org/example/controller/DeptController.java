@@ -9,15 +9,39 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RequestMapping("/depts")
 @RestController
 public class DeptController {
 
     @Autowired
     private DeptService deptService;
-    @GetMapping("/depts")
+    @GetMapping()
     public Result list() {
-        System.out.println("查询全部部门数据");
         List<Dept> deptlist = deptService.finaAll();
         return Result.success(deptlist);
+    }
+
+    @DeleteMapping()
+    public Result delete(@RequestParam List<Integer> ids) {
+        deptService.delete(ids);
+        return Result.success();
+    }
+
+    @PostMapping
+    public Result addDept(@RequestBody Dept dept) {
+        deptService.addDept(dept);
+        return Result.success();
+    }
+
+    @GetMapping("/{id}")
+    public Result get(@PathVariable Integer id) {
+        Dept dept = deptService.selectDeptById(id);
+        return Result.success(dept);
+    }
+
+    @PutMapping()
+    public Result update(@RequestBody Dept dept) {
+        deptService.update(dept);
+        return Result.success();
     }
 }
